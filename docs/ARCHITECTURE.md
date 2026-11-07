@@ -1,30 +1,23 @@
 # Architecture
 
-## Overview
+`@trysac/mcp-client-cli` provides programmatic and CLI access to inspect and test Model Context Protocol (MCP) servers.
 
-`@trysac/mcp-client-cli` is a small, dependency-free TypeScript library published to npm as ES modules with type
-declarations. Command-line MCP client to inspect and smoke-test servers over stdio or Streamable HTTP: list tools, call them with JSON args, check schemas, with timeouts and sanitised output
+## Design
 
-## Modules
+1. **Core API (`src/client.ts`)**:
+   - `inspect(client)`: Retrieves server capabilities and counts of tools, resources, and prompts.
+   - `callTool(client, name, args, opts)`: Calls a tool, applies timeouts via SDK request options, and sanitises output.
+   - `checkServer(client)`: Enforces schema validity, uniqueness, naming conventions, and description presence.
 
-| Module | Responsibility |
-|---|---|
-| `src/index.ts` | Public API. Everything consumers import is exported from here. |
+2. **Target Resolution (`src/target.ts`)**:
+   - Distinguishes stdio commands (`-- <command> [args...]`) from Streamable HTTP endpoints (`--url <url>`).
+   - Strict URL scheme validation restricting to `http:` and `https:`.
 
-Add a row when you add a module. Internal modules are not re-exported unless they are part of the public API.
+3. **Sanitization (`src/sanitizer.ts`)**:
+   - Strips C0 and C1 control characters (excluding `\n` and `\t`), preventing terminal escape code injection.
+   - Caps output at `maxOutput` and appends a `[truncated <n> chars]` marker.
 
-## Boundaries
-
-- No runtime dependencies by default; any addition is justified in [STACK.md](STACK.md).
-- No I/O at import time. Functions are pure unless their documentation says otherwise.
-- Errors are thrown as built-in error types (`TypeError`, `RangeError`) with actionable messages.
-
-## Build and distribution
-
-`npm run build` compiles `src/` to `dist/` with `tsconfig.build.json`. Only `dist/` is published
-(`files` in `package.json`).
-
-## Decisions
-
-Architectural decisions are recorded in [decisions/](decisions/), starting with
-[0001](decisions/0001-record-architecture-decisions.md).
+4. **CLI Runner (`src/cli.ts`)**:
+   - Parses commands and options.
+   - Accepts injected `connect` hooks for isolated in-memory unit tests.
+   - Guarantees client teardown in `finally` blocks.
