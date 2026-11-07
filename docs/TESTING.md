@@ -1,28 +1,12 @@
 # Testing
 
-## Tools
+Tests are located in `test/` and run via `vitest`. They use injected in-memory transports (`InMemoryTransport.createLinkedPair`) to simulate server communication without real networking or process spawning.
 
-- [Vitest](https://vitest.dev/) runs the suites in `test/`.
-- Coverage is collected with V8 (`@vitest/coverage-v8`) over `src/`.
+## Covered Areas
 
-## Commands
-
-```sh
-npm test            # vitest run --coverage
-npx vitest          # watch mode while developing
-npm run check       # every gate, including tests
-```
-
-## Rules
-
-- Coverage must stay at or above 80 % for lines, branches, functions and statements (`vitest.config.ts`).
-  Lowering the thresholds is not allowed.
-- Test through the public entry point (`src/index.ts`) and assert observable behavior: return values,
-  thrown errors and their messages.
-- Each bug fix adds a test that fails without the fix.
-- Tests are deterministic: no network, no real clock or randomness without injection, no shared state between
-  tests. Temporary files go to the OS temp directory and are removed by the test.
-
-## Reports
-
-Coverage reports are written to `coverage/` (text summary and `lcov`). The folder is ignored by git.
+- `test/branches.test.ts`: Covers CLI argument parsing errors, target resolution (HTTP/Stdio), inspect/check utility behavior with stubbed clients, and low-level server communication errors.
+- `test/cli.test.ts`: Functional end-to-end integration tests for command execution (`tools`, `call`, `info`, `check`) against `McpServer` and `Server` instances.
+- `test/errors.test.ts`: Verifies `CliError` behavior, including message truncation.
+- `test/index.test.ts`: Confirms public API exports.
+- `test/sanitizer.test.ts`: Validates control character removal and truncation logic.
+- `test/target.test.ts`: Verifies parsing of `--url` and `-- <cmd> [args]` inputs.

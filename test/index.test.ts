@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { greet } from "../src/index.js";
+import * as mcpCli from "../src/index.js";
 
-describe("greet", () => {
-  it("greets a trimmed name", () => {
-    expect(greet("  Ada ")).toBe("Hello, Ada!");
-  });
-
-  it("rejects an empty name", () => {
-    expect(() => greet("   ")).toThrow(TypeError);
+describe("exports", () => {
+  it("exports all public API members", () => {
+    expect(typeof mcpCli.run).toBe("function");
+    expect(typeof mcpCli.inspect).toBe("function");
+    expect(typeof mcpCli.callTool).toBe("function");
+    expect(typeof mcpCli.checkServer).toBe("function");
+    expect(typeof mcpCli.parseTarget).toBe("function");
+    expect(typeof mcpCli.CliError).toBe("function");
   });
 });
