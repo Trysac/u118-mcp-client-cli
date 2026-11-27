@@ -8,9 +8,15 @@ Developers building MCP servers test them by wiring a full chat client, which is
 
 ## Installation
 
-```bash
-npm install @trysac/mcp-client-cli
+Not published to npm yet. Build it from a clone, then install it from the local path:
+
+```sh
+git clone https://github.com/Trysac/u118-mcp-client-cli.git
+cd u118-mcp-client-cli && npm ci && npm run build
+cd ../your-project && npm install ../u118-mcp-client-cli
 ```
+
+Imports keep the package name: `import { ... } from "@trysac/mcp-client-cli"`.
 
 ## Usage
 
